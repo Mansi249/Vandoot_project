@@ -6,6 +6,7 @@ import os
 API_KEY = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key=API_KEY)
+
 st.title("🌲 VanDoot AI Forest Monitoring System")
 
 st.write(
@@ -21,10 +22,39 @@ and generate an **AI ecological intelligence report**.
 """
 )
 
-uploaded_file = st.file_uploader("Upload events.txt log file")
-if uploaded_file is not None:
+# ---------- DEMO LOG SECTION ----------
 
+st.subheader("📁 Demo Log File")
+
+with open("logs/events.txt", "r") as f:
+    demo_log = f.read()
+
+st.download_button(
+    label="Download Sample Log File",
+    data=demo_log,
+    file_name="events.txt",
+    mime="text/plain"
+)
+
+use_demo = st.button("Use Demo Log")
+
+uploaded_file = st.file_uploader("Upload events.txt log file")
+
+# ---------- SELECT SOURCE OF LOGS ----------
+
+if uploaded_file is not None:
     lines = uploaded_file.read().decode().splitlines()
+
+elif use_demo:
+    lines = demo_log.splitlines()
+
+else:
+    lines = None
+
+
+# ---------- PROCESS LOGS ----------
+
+if lines is not None:
 
     events = []
     human_times = []
@@ -49,6 +79,7 @@ if uploaded_file is not None:
             fire_times.append(timestamp)
 
     counts = Counter(events)
+
     st.subheader("📊 Log Summary")
 
     st.write(f"Animal detections: {counts.get('animal',0)}")
@@ -58,6 +89,7 @@ if uploaded_file is not None:
 
     st.subheader("📄 Log Preview")
     st.code("\n".join(lines[:10]))
+
     summary = f"""
     You are analyzing six months of forest monitoring data collected from
     an AI wildlife camera system.
@@ -82,7 +114,6 @@ if uploaded_file is not None:
     - potential wildfire risks
     """
 
-   
     if st.button("🔍 Analyze with Gemini 3"):
 
         with st.spinner("Gemini is analyzing forest activity..."):
