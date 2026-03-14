@@ -53,7 +53,14 @@ This project is organized according to the flow of data. Follow the pipeline to 
 pip install -r requirements.txt
 
 # 2. Add your Gemini API Key
-export GOOGLE_API_KEY='your_api_key_here'
+
+# Linux / macOS
+export GEMINI_API_KEY="your_api_key_here"
+
+# Windows PowerShell
+$env:GEMINI_API_KEY="your_api_key_here"
 
 # 3. Launch the full pipeline
-python data_generation/generate_realistic_logs.py && streamlit run streamlit_app.py
+python data_generation/generate_realistic_logs.py
+streamlit run streamlit_app.py
+
